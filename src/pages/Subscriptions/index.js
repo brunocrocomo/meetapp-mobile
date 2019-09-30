@@ -74,23 +74,26 @@ function Subscription({ isFocused }) {
             <Header />
             <Container>
                 {loading && <Spinner />}
-                {!loading && subscriptions.length ? (
-                    <SubscriptionList
-                        data={subscriptions}
-                        keyExtractor={item => String(item.id)}
-                        renderItem={({ item }) => (
-                            <MeetupCard
-                                data={item}
-                                buttonLabel="Cancelar inscrição"
-                                onButtonPress={() => handleUnsubscribe(item)}
-                            />
-                        )}
-                    />
-                ) : (
-                    <EmptyListText>
-                        Você não se inscreveu em nenhum meetup ainda! :(
-                    </EmptyListText>
-                )}
+                {!loading &&
+                    (subscriptions.length ? (
+                        <SubscriptionList
+                            data={subscriptions}
+                            keyExtractor={item => String(item.id)}
+                            renderItem={({ item }) => (
+                                <MeetupCard
+                                    data={item}
+                                    buttonLabel="Cancelar inscrição"
+                                    onButtonPress={() =>
+                                        handleUnsubscribe(item)
+                                    }
+                                />
+                            )}
+                        />
+                    ) : (
+                        <EmptyListText>
+                            Você não se inscreveu em nenhum meetup ainda! :(
+                        </EmptyListText>
+                    ))}
             </Container>
         </Background>
     );

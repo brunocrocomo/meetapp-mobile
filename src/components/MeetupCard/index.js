@@ -13,13 +13,17 @@ import {
 } from './styles';
 
 export default function MeetupCard({ data, buttonLabel, onButtonPress }) {
+    let fileUrl = data.file.url;
+    if (__DEV__) {
+        fileUrl = data.file.url.replace('localhost', '10.0.2.2');
+    }
+
     return (
         <Container past={data.past}>
             {
                 <Image
                     source={{
-                        // uri: data.file.url,
-                        uri: data.file.url.replace('localhost', '10.0.2.2'),
+                        uri: fileUrl,
                     }}
                     resizeMode="cover"
                 />

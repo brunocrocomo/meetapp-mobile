@@ -41,7 +41,7 @@ export default function SignUp({ navigation }) {
                         icon="person-outline"
                         autoCorrect={false}
                         autoCapitalize="none"
-                        placeholder="Nome completo"
+                        placeholder="Type your full name"
                         returnKeyType="next"
                         onSubmitEditing={() => emailRef.current.focus()}
                         blurOnSubmit={false}
@@ -53,7 +53,7 @@ export default function SignUp({ navigation }) {
                         keyboardType="email-address"
                         autoCorrect={false}
                         autoCapitalize="none"
-                        placeholder="Digite seu e-mail"
+                        placeholder="Type your e-mail"
                         ref={emailRef}
                         returnKeyType="next"
                         onSubmitEditing={() => passwordRef.current.focus()}
@@ -64,7 +64,7 @@ export default function SignUp({ navigation }) {
                     <FormInput
                         icon="lock-outline"
                         secureTextEntry
-                        placeholder="Sua senha secreta"
+                        placeholder="Type your password"
                         ref={passwordRef}
                         returnKeyType="send"
                         onSubmitEditing={handleSubmit}
@@ -73,7 +73,7 @@ export default function SignUp({ navigation }) {
                     />
 
                     <SubmitButton loading={loading} onPress={handleSubmit}>
-                        Criar conta
+                        Create account
                     </SubmitButton>
                 </Form>
 
@@ -82,7 +82,7 @@ export default function SignUp({ navigation }) {
                         navigation.navigate('SignIn');
                     }}
                 >
-                    <SignLinkText>Já tenho login</SignLinkText>
+                    <SignLinkText>I already have an account</SignLinkText>
                 </SignLink>
             </Container>
         </Background>

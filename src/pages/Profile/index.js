@@ -9,7 +9,6 @@ import { updateProfileRequest } from '~/store/modules/user/actions';
 
 import {
     Container,
-    Title,
     Separator,
     Form,
     FormInput,
@@ -63,7 +62,7 @@ export default function Profile() {
                         icon="person-outline"
                         autoCorrect={false}
                         autoCapitalize="none"
-                        placeholder="Nome completo"
+                        placeholder="Type your full name"
                         returnKeyType="next"
                         onSubmitEditing={() => emailRef.current.focus()}
                         blurOnSubmit={false}
@@ -75,7 +74,7 @@ export default function Profile() {
                         keyboardType="email-address"
                         autoCorrect={false}
                         autoCapitalize="none"
-                        placeholder="Digite seu e-mail"
+                        placeholder="Type your e-mail"
                         ref={emailRef}
                         returnKeyType="next"
                         onSubmitEditing={() => oldPasswordRef.current.focus()}
@@ -88,7 +87,7 @@ export default function Profile() {
                     <FormInput
                         icon="lock-outline"
                         secureTextEntry
-                        placeholder="Senha atual"
+                        placeholder="Current password"
                         ref={oldPasswordRef}
                         returnKeyType="next"
                         onSubmitEditing={() => passwordRef.current.focus()}
@@ -100,7 +99,7 @@ export default function Profile() {
                     <FormInput
                         icon="lock-outline"
                         secureTextEntry
-                        placeholder="Nova senha"
+                        placeholder="New password"
                         ref={passwordRef}
                         returnKeyType="next"
                         onSubmitEditing={() =>
@@ -114,7 +113,7 @@ export default function Profile() {
                     <FormInput
                         icon="lock-outline"
                         secureTextEntry
-                        placeholder="Confirmação de senha"
+                        placeholder="Confirm new password"
                         ref={confirmPasswordRef}
                         returnKeyType="send"
                         onSubmitEditing={handleSubmit}
@@ -123,11 +122,9 @@ export default function Profile() {
                     />
 
                     <SubmitButton onPress={handleSubmit}>
-                        Salvar perfil
+                        Save Profile
                     </SubmitButton>
-                    <LogoutButton onPress={handleLogout}>
-                        Sair do Meetapp
-                    </LogoutButton>
+                    <LogoutButton onPress={handleLogout}>Logout</LogoutButton>
                 </Form>
             </Container>
         </Background>
@@ -135,7 +132,7 @@ export default function Profile() {
 }
 
 Profile.navigationOptions = {
-    tabBarLabel: 'Meu perfil',
+    tabBarLabel: 'Profile',
     tabBarIcon: ({ tintColor }) => (
         <Icon name="person" size={20} color={tintColor} />
     ),

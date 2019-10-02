@@ -24,7 +24,6 @@ function Subscription({ isFocused }) {
                 const response = await api.get('subscriptions');
 
                 const data = response.data.map(meetup => ({
-                    subscriptionId: meetup.id,
                     ...meetup.Meetup,
                     past: isBefore(parseISO(meetup.Meetup.date), new Date()),
                     date: format(
@@ -50,10 +49,9 @@ function Subscription({ isFocused }) {
 
     async function handleUnsubscribe(meetup) {
         try {
-            const { subscriptionId } = meetup;
             const { id } = meetup;
 
-            await api.delete(`/subscriptions/${subscriptionId}`);
+            await api.delete(`meetups/${id}/subscriptions`);
 
             setSubscriptions(subscriptions.filter(item => item.id !== id));
 
@@ -104,7 +102,7 @@ Subscription.propTypes = {
 };
 
 Subscription.navigationOptions = {
-    tabBarLabel: 'Inscrições',
+    tabBarLabel: 'Subscriptions',
     tabBarIcon: ({ tintColor }) => (
         <Icon name="local-offer" size={20} color={tintColor} />
     ),

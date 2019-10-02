@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Alert, TouchableOpacity } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
 import { format, parseISO, isBefore, subDays, addDays } from 'date-fns';
-import pt from 'date-fns/locale/pt';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import PropTypes from 'prop-types';
 
@@ -40,19 +39,17 @@ function Dashboard({ isFocused }) {
                 const data = response.data.map(meetup => ({
                     ...meetup,
                     past: isBefore(parseISO(meetup.date), new Date()),
-                    date: format(
-                        parseISO(meetup.date),
-                        "dd 'de' MMMM',' 'às' HH'h'",
-                        {
-                            locale: pt,
-                        }
-                    ),
+                    date: format(parseISO(meetup.date), 'MMMM do, h:mm a'),
                 }));
 
                 setMeetups(data);
                 setLoading(false);
+                setPage(1);
             } catch (error) {
-                Alert.alert('Erro', 'Não foi possível carregar os meetups.');
+                Alert.alert(
+                    'Error',
+                    'An error ocurred while loading the meetup list.'
+                );
             }
         }
 
@@ -87,9 +84,7 @@ function Dashboard({ isFocused }) {
             ...meetup,
             past: isBefore(parseISO(meetup.date), new Date()),
             defaultDate: meetup.date,
-            date: format(parseISO(meetup.date), "dd 'de' MMMM',' 'às' HH'h'", {
-                locale: pt,
-            }),
+            date: format(parseISO(meetup.date), 'MMMM do, h:mm a'),
         }));
 
         setMeetups([...meetups, ...data]);

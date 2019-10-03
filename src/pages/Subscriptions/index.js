@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
 import { format, parseISO, isBefore } from 'date-fns';
-import pt from 'date-fns/locale/pt';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import PropTypes from 'prop-types';
 
@@ -28,17 +27,17 @@ function Subscription({ isFocused }) {
                     past: isBefore(parseISO(meetup.Meetup.date), new Date()),
                     date: format(
                         parseISO(meetup.Meetup.date),
-                        "dd 'de' MMMM',' 'às' HH'h'",
-                        {
-                            locale: pt,
-                        }
+                        'MMMM do, h:mm a'
                     ),
                 }));
 
                 setSubscriptions(data);
                 setLoading(false);
             } catch (error) {
-                Alert.alert('Erro', 'Não foi possível carregar os meetups.');
+                Alert.alert(
+                    'Error',
+                    'An error ocurred while loading your subscription list.'
+                );
             }
         }
 
@@ -55,14 +54,11 @@ function Subscription({ isFocused }) {
 
             setSubscriptions(subscriptions.filter(item => item.id !== id));
 
-            Alert.alert(
-                'Sucesso',
-                'Cancelamento da inscrição realizado com sucesso!'
-            );
+            Alert.alert('Done!', 'You unsubscribed from the meetup!');
         } catch (error) {
             Alert.alert(
-                'Erro',
-                'Não foi possível cancelar sua inscrição no meetup.'
+                'Error',
+                'It was not possible to unsubscribe from this meetup.'
             );
         }
     }
@@ -80,7 +76,7 @@ function Subscription({ isFocused }) {
                             renderItem={({ item }) => (
                                 <MeetupCard
                                     data={item}
-                                    buttonLabel="Cancelar inscrição"
+                                    buttonLabel="Cancel subscription"
                                     onButtonPress={() =>
                                         handleUnsubscribe(item)
                                     }
@@ -89,7 +85,7 @@ function Subscription({ isFocused }) {
                         />
                     ) : (
                         <EmptyListText>
-                            Você não se inscreveu em nenhum meetup ainda! :(
+                            You have not subscribed for any meetup yet! :(
                         </EmptyListText>
                     ))}
             </Container>

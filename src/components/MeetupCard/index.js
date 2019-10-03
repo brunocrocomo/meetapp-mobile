@@ -13,10 +13,9 @@ import {
 } from './styles';
 
 export default function MeetupCard({ data, buttonLabel, onButtonPress }) {
-    let fileUrl = data.file.url;
-    if (__DEV__) {
-        fileUrl = data.file.url.replace('localhost', '10.0.2.2');
-    }
+    const fileUrl = __DEV__
+        ? data.file.url.replace('localhost', '10.0.2.2')
+        : data.file.url;
 
     return (
         <Container past={data.past}>
@@ -40,7 +39,7 @@ export default function MeetupCard({ data, buttonLabel, onButtonPress }) {
                 </IconLabel>
                 <IconLabel>
                     <Icon name="person" size={14} color="#999" />
-                    <Label>Organizador: {data.User.name}</Label>
+                    <Label>Organizer: {data.User.name}</Label>
                 </IconLabel>
                 <SubscribeButton onPress={onButtonPress}>
                     {buttonLabel}

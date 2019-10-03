@@ -20,10 +20,9 @@ export function* signIn({ payload }) {
         api.defaults.headers.Authorization = `Bearer ${token}`;
 
         yield put(signInSuccess(token, user));
-
-        // NavigationService.navigate('Dashboard');
     } catch (err) {
-        Alert.alert('Erro', 'Falha na autenticação, verifique seus dados.');
+        const { error } = err.response.data;
+        Alert.alert('Error', error);
         yield put(signFailure());
     }
 }
@@ -40,10 +39,11 @@ export function* signUp({ payload }) {
 
         yield put(signUpSuccess());
 
-        Alert.alert('Sucesso', 'Conta criada com sucesso!');
+        Alert.alert('Great!', 'Your account has been successfully created!');
         NavigationService.navigate('SignIn');
     } catch (err) {
-        Alert.alert('Erro', 'Falha no cadastro, verifique seus dados!');
+        const { error } = err.response.data;
+        Alert.alert('Error', error);
         yield put(signFailure());
     }
 }
@@ -58,13 +58,8 @@ export function setToken({ payload }) {
     }
 }
 
-export function signOut() {
-    // history.push('/');
-}
-
 export default all([
     takeLatest('persist/REHYDRATE', setToken),
     takeLatest('@auth/SIGN_IN_REQUEST', signIn),
     takeLatest('@auth/SIGN_UP_REQUEST', signUp),
-    takeLatest('@auth/SIGN_OUT', signOut),
 ]);

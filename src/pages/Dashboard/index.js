@@ -95,10 +95,10 @@ function Dashboard({ isFocused }) {
         try {
             await api.post(`/meetups/${id}/subscriptions`);
 
-            Alert.alert('Sucesso', 'Sua inscrição foi relizada!');
+            Alert.alert('Great!', 'You are now subscribed to a new meetup!');
         } catch (err) {
             const { error } = err.response.data;
-            Alert.alert('Erro', error);
+            Alert.alert('Error', error);
         }
     }
 
@@ -135,7 +135,7 @@ function Dashboard({ isFocused }) {
                                 renderItem={({ item }) => (
                                     <MeetupCard
                                         data={item}
-                                        buttonLabel="Realizar inscrição"
+                                        buttonLabel="Subscribe"
                                         onButtonPress={() =>
                                             handleSubscribe(item.id)
                                         }
@@ -146,7 +146,7 @@ function Dashboard({ isFocused }) {
                             />
                         ) : (
                             <EmptyListText>
-                                Nenhum meetup marcado para esta data! :(
+                                There are no meetups scheduled for this date! :(
                             </EmptyListText>
                         ))}
                 </ListContainer>

@@ -39,7 +39,7 @@ export function* signUp({ payload }) {
 
         yield put(signUpSuccess());
 
-        Alert.alert('Great!', 'Your account has been successfully created!');
+        Alert.alert('Great!', 'Your account has been created successfully!');
         NavigationService.navigate('SignIn');
     } catch (err) {
         const { error } = err.response.data;

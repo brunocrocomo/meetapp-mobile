@@ -85,6 +85,12 @@ function Dashboard({ isFocused }) {
         }
     }
 
+    function handleDateInputOnChange(pickedDate) {
+        if (!loading && !loadingMore) {
+            setDate(pickedDate);
+        }
+    }
+
     async function loadMore() {
         setLoadingMore(true);
 
@@ -132,7 +138,7 @@ function Dashboard({ isFocused }) {
                             color="#FFF"
                         />
                     </TouchableOpacity>
-                    <DateInput date={date} onChange={setDate} />
+                    <DateInput date={date} onChange={handleDateInputOnChange} />
                     <TouchableOpacity onPress={handleNextDay}>
                         <ChevronRight
                             name="chevron-right"

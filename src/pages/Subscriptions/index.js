@@ -68,10 +68,9 @@ function Subscription({ isFocused }) {
             setSubscriptions(subscriptions.filter(item => item.id !== id));
 
             showSuccessSnackbar('You unsubscribed from the meetup!');
-        } catch (error) {
-            showErrorSnackbar(
-                'It was not possible to unsubscribe from the meetup.'
-            );
+        } catch (err) {
+            const { error } = err.response.data;
+            showErrorSnackbar(error);
         }
     }
 

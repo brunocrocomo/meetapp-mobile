@@ -22,16 +22,22 @@ function Subscription({ isFocused }) {
             try {
                 const response = await api.get('subscriptions');
 
-                const data = response.data.map(meetup => ({
-                    ...meetup.Meetup,
-                    past: isBefore(parseISO(meetup.Meetup.date), new Date()),
-                    date: format(
-                        parseISO(meetup.Meetup.date),
-                        'MMMM do, h:mm a'
-                    ),
-                }));
+                if (response.data.length) {
+                    const data = response.data.map(meetup => ({
+                        ...meetup.Meetup,
+                        past: isBefore(
+                            parseISO(meetup.Meetup.date),
+                            new Date()
+                        ),
+                        date: format(
+                            parseISO(meetup.Meetup.date),
+                            'MMMM do, h:mm a'
+                        ),
+                    }));
 
-                setSubscriptions(data);
+                    setSubscriptions(data);
+                }
+
                 setLoading(false);
             } catch (error) {
                 Alert.alert(

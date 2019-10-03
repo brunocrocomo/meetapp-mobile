@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
 import { format, parseISO, isBefore, subDays, addDays } from 'date-fns';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import PropTypes from 'prop-types';
 
 import api from '~/services/api';
+
+import { showSuccessSnackbar, showErrorSnackbar } from '../../utils/Snackbar';
 
 import Background from '~/components/Background';
 import Header from '~/components/Header';
@@ -19,9 +21,11 @@ import {
     ChevronRight,
     ListContainer,
     MeetupList,
-    EmptyListText,
     Spinner,
     InfiniteLoaderSpinner,
+    EmptyListContainer,
+    EmptyListIcon,
+    EmptyListText,
 } from './styles';
 
 function Dashboard({ isFocused }) {
@@ -54,8 +58,7 @@ function Dashboard({ isFocused }) {
 
                 setLoading(false);
             } catch (error) {
-                Alert.alert(
-                    'Error',
+                showErrorSnackbar(
                     'An error ocurred while loading the meetup list.'
                 );
             }
@@ -119,10 +122,10 @@ function Dashboard({ isFocused }) {
         try {
             await api.post(`/meetups/${id}/subscriptions`);
 
-            Alert.alert('Great!', 'You are now subscribed to a new meetup!');
+            showSuccessSnackbar('You are now subscribed to a new meetup!');
         } catch (err) {
             const { error } = err.response.data;
-            Alert.alert('Error', error);
+            showErrorSnackbar(error);
         }
     }
 
@@ -171,9 +174,10 @@ function Dashboard({ isFocused }) {
                                 onEndReached={loadMore}
                             />
                         ) : (
-                            <EmptyListText>
-                                There are no meetups scheduled for this date! :(
-                            </EmptyListText>
+                            <EmptyListContainer>
+                                <EmptyListIcon />
+                                <EmptyListText>No meetups found!</EmptyListText>
+                            </EmptyListContainer>
                         ))}
                 </ListContainer>
             </Container>

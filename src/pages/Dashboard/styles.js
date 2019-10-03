@@ -48,9 +48,20 @@ export const InfiniteLoaderSpinner = styled.ActivityIndicator.attrs({
     margin-bottom: 20px;
 `;
 
+export const EmptyListContainer = styled.View`
+    align-items: center;
+    opacity: 0.6;
+`;
+
+export const EmptyListIcon = styled(Icon).attrs({
+    name: 'format-list-bulleted',
+    size: 50,
+    color: '#FFF',
+})``;
+
 export const EmptyListText = styled.Text`
     text-align: center;
-    margin: 20px;
+    margin: 0 20px 20px 20px;
     font-size: 18px;
     font-weight: bold;
     color: #fff;

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Alert } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
 import { format, parseISO, isBefore } from 'date-fns';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -7,11 +6,20 @@ import PropTypes from 'prop-types';
 
 import api from '~/services/api';
 
+import { showSuccessSnackbar, showErrorSnackbar } from '../../utils/Snackbar';
+
 import Background from '~/components/Background';
 import Header from '~/components/Header';
 import MeetupCard from '~/components/MeetupCard';
 
-import { Container, EmptyListText, SubscriptionList, Spinner } from './styles';
+import {
+    Container,
+    SubscriptionList,
+    Spinner,
+    EmptyListContainer,
+    EmptyListIcon,
+    EmptyListText,
+} from './styles';
 
 function Subscription({ isFocused }) {
     const [subscriptions, setSubscriptions] = useState([]);
@@ -40,8 +48,7 @@ function Subscription({ isFocused }) {
 
                 setLoading(false);
             } catch (error) {
-                Alert.alert(
-                    'Error',
+                showErrorSnackbar(
                     'An error ocurred while loading your subscription list.'
                 );
             }
@@ -60,11 +67,10 @@ function Subscription({ isFocused }) {
 
             setSubscriptions(subscriptions.filter(item => item.id !== id));
 
-            Alert.alert('Done!', 'You unsubscribed from the meetup!');
+            showSuccessSnackbar('You unsubscribed from the meetup!');
         } catch (error) {
-            Alert.alert(
-                'Error',
-                'It was not possible to unsubscribe from this meetup.'
+            showErrorSnackbar(
+                'It was not possible to unsubscribe from the meetup.'
             );
         }
     }
@@ -90,9 +96,12 @@ function Subscription({ isFocused }) {
                             )}
                         />
                     ) : (
-                        <EmptyListText>
-                            You have not subscribed for any meetup yet! :(
-                        </EmptyListText>
+                        <EmptyListContainer>
+                            <EmptyListIcon />
+                            <EmptyListText>
+                                Your subscriptions are shown here!
+                            </EmptyListText>
+                        </EmptyListContainer>
                     ))}
             </Container>
         </Background>

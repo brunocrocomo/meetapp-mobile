@@ -39,5 +39,5 @@ export const SubmitButton = styled(Button)`
 
 export const LogoutButton = styled(Button)`
     margin-top: 15px;
-    background: ${darken(0.15, '#f94d6a')};
+    background: #f1002e;
 `;

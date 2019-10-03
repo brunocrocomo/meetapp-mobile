@@ -1,9 +1,12 @@
-import { Alert } from 'react-native';
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 
 import api from '~/services/api';
 
 import { updateProfileSuccess, updateProfileFailure } from './actions';
+import {
+    showSuccessSnackbar,
+    showErrorSnackbar,
+} from '../../../utils/Snackbar';
 
 export function* updateProfile({ payload }) {
     try {
@@ -17,12 +20,12 @@ export function* updateProfile({ payload }) {
 
         const response = yield call(api.put, 'users', profile);
 
-        Alert.alert('Great!', 'Your account has been updated successfully!');
+        showSuccessSnackbar('Your account has been updated successfully!');
 
         yield put(updateProfileSuccess(response.data));
     } catch (err) {
         const { error } = err.response.data;
-        Alert.alert('Error', error);
+        showErrorSnackbar(error);
         yield put(updateProfileFailure());
     }
 }

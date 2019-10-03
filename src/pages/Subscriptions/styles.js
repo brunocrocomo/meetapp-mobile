@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const Container = styled.View`
     flex: 1;
@@ -18,6 +19,17 @@ export const Spinner = styled.ActivityIndicator.attrs({
     justify-content: center;
     align-items: center;
 `;
+
+export const EmptyListContainer = styled.View`
+    align-items: center;
+    opacity: 0.6;
+`;
+
+export const EmptyListIcon = styled(Icon).attrs({
+    name: 'local-offer',
+    size: 50,
+    color: '#FFF',
+})``;
 
 export const EmptyListText = styled.Text`
     text-align: center;

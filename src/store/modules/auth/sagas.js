@@ -1,8 +1,12 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
-import { Alert } from 'react-native';
 
 import NavigationService from '~/services/navigation';
 import api from '~/services/api';
+
+import {
+    showSuccessSnackbar,
+    showErrorSnackbar,
+} from '../../../utils/Snackbar';
 
 import { signInSuccess, signUpSuccess, signFailure } from './actions';
 
@@ -22,7 +26,7 @@ export function* signIn({ payload }) {
         yield put(signInSuccess(token, user));
     } catch (err) {
         const { error } = err.response.data;
-        Alert.alert('Error', error);
+        showErrorSnackbar(error);
         yield put(signFailure());
     }
 }
@@ -39,11 +43,11 @@ export function* signUp({ payload }) {
 
         yield put(signUpSuccess());
 
-        Alert.alert('Great!', 'Your account has been created successfully!');
+        showSuccessSnackbar('Your account has been created successfully!');
         NavigationService.navigate('SignIn');
     } catch (err) {
         const { error } = err.response.data;
-        Alert.alert('Error', error);
+        showErrorSnackbar(error);
         yield put(signFailure());
     }
 }

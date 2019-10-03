@@ -9,6 +9,6 @@ export const Container = styled.SafeAreaView`
 `;
 
 export const Logo = styled.Image`
-    width: 23px;
+    width: 24px;
     height: 24px;
 `;

@@ -21,6 +21,7 @@ import {
     MeetupList,
     EmptyListText,
     Spinner,
+    InfiniteLoaderSpinner,
 } from './styles';
 
 function Dashboard({ isFocused }) {
@@ -28,23 +29,30 @@ function Dashboard({ isFocused }) {
     const [date, setDate] = useState(new Date());
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
 
     useEffect(() => {
         async function loadMeetups() {
             try {
+                setMeetups([]);
+                setLoading(true);
+                setPage(1);
+
                 const response = await api.get('meetups', {
                     params: { date },
                 });
 
-                const data = response.data.map(meetup => ({
-                    ...meetup,
-                    past: isBefore(parseISO(meetup.date), new Date()),
-                    date: format(parseISO(meetup.date), 'MMMM do, h:mm a'),
-                }));
+                if (response.data.length) {
+                    const data = response.data.map(meetup => ({
+                        ...meetup,
+                        past: isBefore(parseISO(meetup.date), new Date()),
+                        date: format(parseISO(meetup.date), 'MMMM do, h:mm a'),
+                    }));
 
-                setMeetups(data);
+                    setMeetups(data);
+                }
+
                 setLoading(false);
-                setPage(1);
             } catch (error) {
                 Alert.alert(
                     'Error',
@@ -59,36 +67,46 @@ function Dashboard({ isFocused }) {
     }, [date, isFocused]);
 
     function handlePrevDay() {
-        const prevDay = subDays(date, 1);
-        const today = new Date();
+        if (!loading && !loadingMore) {
+            const prevDay = subDays(date, 1);
+            const today = new Date();
 
-        if (isBefore(prevDay, today)) {
-            setDate(today);
-        } else {
-            setDate(prevDay);
+            if (isBefore(prevDay, today)) {
+                setDate(today);
+            } else {
+                setDate(prevDay);
+            }
         }
     }
 
     function handleNextDay() {
-        setDate(addDays(date, 1));
+        if (!loading && !loadingMore) {
+            setDate(addDays(date, 1));
+        }
     }
 
     async function loadMore() {
+        setLoadingMore(true);
+
         const nextPage = page + 1;
 
         const response = await api.get('meetups', {
             params: { date, page: nextPage },
         });
 
-        const data = response.data.map(meetup => ({
-            ...meetup,
-            past: isBefore(parseISO(meetup.date), new Date()),
-            defaultDate: meetup.date,
-            date: format(parseISO(meetup.date), 'MMMM do, h:mm a'),
-        }));
+        if (response.data.length) {
+            const data = response.data.map(meetup => ({
+                ...meetup,
+                past: isBefore(parseISO(meetup.date), new Date()),
+                defaultDate: meetup.date,
+                date: format(parseISO(meetup.date), 'MMMM do, h:mm a'),
+            }));
 
-        setMeetups([...meetups, ...data]);
-        setPage(nextPage);
+            setMeetups([...meetups, ...data]);
+            setPage(nextPage);
+        }
+
+        setLoadingMore(false);
     }
 
     async function handleSubscribe(id) {
@@ -123,7 +141,6 @@ function Dashboard({ isFocused }) {
                         />
                     </TouchableOpacity>
                 </DatePicker>
-
                 <ListContainer>
                     {loading && <Spinner />}
 
@@ -141,6 +158,9 @@ function Dashboard({ isFocused }) {
                                         }
                                     />
                                 )}
+                                ListFooterComponent={
+                                    loadingMore && <InfiniteLoaderSpinner />
+                                }
                                 onEndReachedThreshold={0.2}
                                 onEndReached={loadMore}
                             />

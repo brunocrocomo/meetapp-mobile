@@ -41,6 +41,13 @@ export const Spinner = styled.ActivityIndicator.attrs({
     align-items: center;
 `;
 
+export const InfiniteLoaderSpinner = styled.ActivityIndicator.attrs({
+    color: '#FFF',
+    size: 'small',
+})`
+    margin-bottom: 20px;
+`;
+
 export const EmptyListText = styled.Text`
     text-align: center;
     margin: 20px;

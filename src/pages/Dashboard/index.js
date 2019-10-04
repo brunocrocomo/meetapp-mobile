@@ -70,28 +70,34 @@ function Dashboard({ isFocused }) {
     }, [date, isFocused]);
 
     function handlePrevDay() {
-        if (!loading && !loadingMore) {
-            const prevDay = subDays(date, 1);
-            const today = new Date();
+        if (loading || loadingMore) {
+            return;
+        }
 
-            if (isBefore(prevDay, today)) {
-                setDate(today);
-            } else {
-                setDate(prevDay);
-            }
+        const prevDay = subDays(date, 1);
+        const today = new Date();
+
+        if (isBefore(prevDay, today)) {
+            setDate(today);
+        } else {
+            setDate(prevDay);
         }
     }
 
     function handleNextDay() {
-        if (!loading && !loadingMore) {
-            setDate(addDays(date, 1));
+        if (loading || loadingMore) {
+            return;
         }
+
+        setDate(addDays(date, 1));
     }
 
     function handleDateInputOnChange(pickedDate) {
-        if (!loading && !loadingMore) {
-            setDate(pickedDate);
+        if (loading || loadingMore) {
+            return;
         }
+
+        setDate(pickedDate);
     }
 
     async function loadMore() {

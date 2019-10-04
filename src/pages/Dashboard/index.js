@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
 import { format, parseISO, isBefore, subDays, addDays } from 'date-fns';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import PropTypes from 'prop-types';
 
 import api from '~/services/api';
 
@@ -28,46 +27,68 @@ import {
     EmptyListText,
 } from './styles';
 
-function Dashboard({ isFocused }) {
+function Dashboard() {
     const [meetups, setMeetups] = useState([]);
     const [date, setDate] = useState(new Date());
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
+    const [maxPageReached, setMaxPageReached] = useState(false);
 
-    useEffect(() => {
-        async function loadMeetups() {
-            try {
-                setMeetups([]);
+    const load = useCallback(async (queryDate = new Date(), queryPage = 1) => {
+        try {
+            if (queryPage > 1) {
+                setLoadingMore(true);
+            } else {
                 setLoading(true);
-                setPage(1);
+            }
 
-                const response = await api.get('meetups', {
-                    params: { date },
-                });
+            const response = await api.get('meetups', {
+                params: { date: queryDate, page: queryPage },
+            });
 
-                if (response.data.length) {
-                    const data = response.data.map(meetup => ({
-                        ...meetup,
-                        past: isBefore(parseISO(meetup.date), new Date()),
-                        date: format(parseISO(meetup.date), 'MMMM do, h:mm a'),
-                    }));
+            if (response.data.length <= 0) {
+                setMaxPageReached(true);
+            }
 
-                    setMeetups(data);
+            const data = response.data.map(meetup => ({
+                ...meetup,
+                past: isBefore(parseISO(meetup.date), new Date()),
+                date: format(parseISO(meetup.date), 'MMMM do, h:mm a'),
+            }));
+
+            setMeetups(m => {
+                if (queryPage > 1) {
+                    return [...m, ...data];
                 }
 
-                setLoading(false);
-            } catch (error) {
-                showErrorSnackbar(
-                    'An error ocurred while loading the meetup list.'
-                );
-            }
-        }
+                return data;
+            });
 
-        if (isFocused) {
-            loadMeetups();
+            setPage(queryPage);
+
+            if (queryPage > 1) {
+                setLoadingMore(false);
+            } else {
+                setLoading(false);
+            }
+        } catch (error) {
+            showErrorSnackbar(
+                'An error ocurred while loading the meetup list.'
+            );
         }
-    }, [date, isFocused]);
+    }, []);
+
+    function loadMore() {
+        if (!loadingMore) {
+            load(date, page + 1);
+        }
+    }
+
+    useEffect(() => {
+        setMaxPageReached(false);
+        load(date, 1);
+    }, [load, date]);
 
     function handlePrevDay() {
         if (loading || loadingMore) {
@@ -98,30 +119,6 @@ function Dashboard({ isFocused }) {
         }
 
         setDate(pickedDate);
-    }
-
-    async function loadMore() {
-        setLoadingMore(true);
-
-        const nextPage = page + 1;
-
-        const response = await api.get('meetups', {
-            params: { date, page: nextPage },
-        });
-
-        if (response.data.length) {
-            const data = response.data.map(meetup => ({
-                ...meetup,
-                past: isBefore(parseISO(meetup.date), new Date()),
-                defaultDate: meetup.date,
-                date: format(parseISO(meetup.date), 'MMMM do, h:mm a'),
-            }));
-
-            setMeetups([...meetups, ...data]);
-            setPage(nextPage);
-        }
-
-        setLoadingMore(false);
     }
 
     async function handleSubscribe(id) {
@@ -176,8 +173,10 @@ function Dashboard({ isFocused }) {
                                 ListFooterComponent={
                                     loadingMore && <InfiniteLoaderSpinner />
                                 }
-                                onEndReachedThreshold={0.2}
-                                onEndReached={loadMore}
+                                onEndReachedThreshold={
+                                    maxPageReached ? null : 0.2
+                                }
+                                onEndReached={maxPageReached ? null : loadMore}
                             />
                         ) : (
                             <EmptyListContainer>
@@ -190,10 +189,6 @@ function Dashboard({ isFocused }) {
         </Background>
     );
 }
-
-Dashboard.propTypes = {
-    isFocused: PropTypes.bool.isRequired,
-};
 
 Dashboard.navigationOptions = {
     tabBarLabel: 'Meetups',

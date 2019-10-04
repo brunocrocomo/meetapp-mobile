@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { withNavigationFocus } from 'react-navigation';
 import { format, parseISO, isBefore } from 'date-fns';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import PropTypes from 'prop-types';
 
 import api from '~/services/api';
 
@@ -21,7 +20,7 @@ import {
     EmptyListText,
 } from './styles';
 
-function Subscription({ isFocused }) {
+function Subscription() {
     const [subscriptions, setSubscriptions] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -54,10 +53,8 @@ function Subscription({ isFocused }) {
             }
         }
 
-        if (isFocused) {
-            loadMeetups();
-        }
-    }, [isFocused]);
+        loadMeetups();
+    }, []);
 
     async function handleUnsubscribe(meetup) {
         try {
@@ -106,10 +103,6 @@ function Subscription({ isFocused }) {
         </Background>
     );
 }
-
-Subscription.propTypes = {
-    isFocused: PropTypes.bool.isRequired,
-};
 
 Subscription.navigationOptions = {
     tabBarLabel: 'Subscriptions',

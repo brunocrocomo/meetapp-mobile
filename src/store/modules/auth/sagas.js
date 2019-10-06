@@ -25,7 +25,11 @@ export function* signIn({ payload }) {
 
         yield put(signInSuccess(token, user));
     } catch (err) {
-        const { error } = err.response.data;
+        let { error } = err.response.data;
+        if (error.constructor !== String) {
+            error =
+                'It was not possible to complete your request. Please, try again.';
+        }
         showErrorSnackbar(error);
         yield put(signFailure());
     }
@@ -46,7 +50,12 @@ export function* signUp({ payload }) {
         showSuccessSnackbar('Your account has been created successfully!');
         NavigationService.navigate('SignIn');
     } catch (err) {
-        const { error } = err.response.data;
+        let { error } = err.response.data;
+        console.tron.log(error.constructor);
+        if (error.constructor !== String) {
+            error =
+                'It was not possible to complete your request. Please, try again.';
+        }
         showErrorSnackbar(error);
         yield put(signFailure());
     }

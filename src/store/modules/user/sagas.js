@@ -24,7 +24,11 @@ export function* updateProfile({ payload }) {
 
         yield put(updateProfileSuccess(response.data));
     } catch (err) {
-        const { error } = err.response.data;
+        let { error } = err.response.data;
+        if (error.constructor !== String) {
+            error =
+                'It was not possible to complete your request. Please, try again.';
+        }
         showErrorSnackbar(error);
         yield put(updateProfileFailure());
     }

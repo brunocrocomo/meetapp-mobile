@@ -69,7 +69,11 @@ function Subscription({ isFocused }) {
 
             showSuccessSnackbar('You unsubscribed from the meetup!');
         } catch (err) {
-            const { error } = err.response.data;
+            let { error } = err.response.data;
+            if (error.constructor !== String) {
+                error =
+                    'It was not possible to complete your request. Please, try again.';
+            }
             showErrorSnackbar(error);
         }
     }

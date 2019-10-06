@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
 import { format, parseISO, isBefore, subDays, addDays } from 'date-fns';
+import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import api from '~/services/api';
@@ -27,7 +28,7 @@ import {
     EmptyListText,
 } from './styles';
 
-function Dashboard() {
+function Dashboard({ isFocused }) {
     const [meetups, setMeetups] = useState([]);
     const [date, setDate] = useState(new Date());
     const [page, setPage] = useState(1);
@@ -86,9 +87,11 @@ function Dashboard() {
     }
 
     useEffect(() => {
-        setMaxPageReached(false);
-        load(date, 1);
-    }, [load, date]);
+        if (isFocused) {
+            setMaxPageReached(false);
+            load(date, 1);
+        }
+    }, [load, date, isFocused]);
 
     function handlePrevDay() {
         if (loading || loadingMore) {
@@ -195,6 +198,10 @@ Dashboard.navigationOptions = {
     tabBarIcon: ({ tintColor }) => (
         <Icon name="format-list-bulleted" size={20} color={tintColor} />
     ),
+};
+
+Dashboard.propTypes = {
+    isFocused: PropTypes.bool.isRequired,
 };
 
 export default withNavigationFocus(Dashboard);

@@ -1,4 +1,4 @@
-package com.meetappmobile;
+package com.meetapp;
 
 import android.app.Application;
 import android.util.Log;

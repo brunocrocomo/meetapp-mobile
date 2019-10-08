@@ -1,8 +1,8 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'MeetappMobile' do
-  # Pods for MeetappMobile
+target 'meetapp' do
+  # Pods for meetapp
   pod 'React', :path => '../node_modules/react-native/'
   pod 'React-Core', :path => '../node_modules/react-native/React'
   pod 'React-DevSupport', :path => '../node_modules/react-native/React'
@@ -29,7 +29,7 @@ target 'MeetappMobile' do
 
 
 
-  target 'MeetappMobileTests' do
+  target 'meetappTests' do
     inherit! :search_paths
     # Pods for testing
   end
@@ -37,10 +37,10 @@ target 'MeetappMobile' do
   use_native_modules!
 end
 
-target 'MeetappMobile-tvOS' do
-  # Pods for MeetappMobile-tvOS
+target 'meetapp-tvOS' do
+  # Pods for meetapp-tvOS
 
-  target 'MeetappMobile-tvOSTests' do
+  target 'meetapp-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end

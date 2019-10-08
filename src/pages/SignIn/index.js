@@ -23,13 +23,10 @@ export default function SignIn({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    // const loading = useSelector(state => state.auth.loading);
-    const [loading, setLoading] = useState(false);
+    const loading = useSelector(state => state.auth.loading);
 
     function handleSubmit() {
-        setLoading(true);
         dispatch(signInRequest(email, password));
-        setLoading(false);
     }
 
     return (

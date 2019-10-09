@@ -4,7 +4,7 @@ export const Container = styled.SafeAreaView`
     align-items: center;
     justify-content: center;
 
-    height: 80px;
+    height: 64px;
     background-color: rgba(0, 0, 0, 0.3);
 `;
 

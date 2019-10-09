@@ -20,6 +20,7 @@ export default function Index() {
                     barStyle="light-content"
                     backgroundColor="transparent"
                     translucent
+                    hidden
                 />
                 <App />
             </PersistGate>

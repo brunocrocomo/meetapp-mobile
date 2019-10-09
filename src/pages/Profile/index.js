@@ -1,9 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import * as Yup from 'yup';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Background from '~/components/Background';
 import Header from '~/components/Header';
+import { showErrorSnackbar } from '~/utils/Snackbar';
+
 import { signOut } from '~/store/modules/auth/actions';
 import { updateProfileRequest } from '~/store/modules/user/actions';
 
@@ -15,6 +18,33 @@ import {
     SubmitButton,
     LogoutButton,
 } from './styles';
+
+const schema = Yup.object().shape({
+    name: Yup.string().required('The name field is required.'),
+    email: Yup.string()
+        .email('Type a valid e-mail.')
+        .required('The e-mail field is required.'),
+    oldPassword: Yup.string(),
+    password: Yup.string().when('oldPassword', (oldPassword, field) =>
+        oldPassword
+            ? field.required(
+                  'The new password field is required for changing password.'
+              )
+            : field
+    ),
+    confirmPassword: Yup.string().when('password', (password, field) =>
+        password
+            ? field
+                  .required(
+                      'The confirm new password field is required for changing password.'
+                  )
+                  .oneOf(
+                      [Yup.ref('password')],
+                      'The new password does not match.'
+                  )
+            : field
+    ),
+});
 
 export default function Profile() {
     const dispatch = useDispatch();
@@ -37,16 +67,27 @@ export default function Profile() {
         setConfirmPassword('');
     }, [profile]);
 
-    function handleSubmit() {
-        dispatch(
-            updateProfileRequest({
-                name,
-                email,
-                oldPassword,
-                password,
-                confirmPassword,
-            })
-        );
+    async function handleSubmit() {
+        const profileData = {
+            name,
+            email,
+            oldPassword,
+            password,
+            confirmPassword,
+        };
+
+        try {
+            await schema.validate(profileData);
+
+            dispatch(updateProfileRequest(profileData));
+        } catch (err) {
+            let errorMessage =
+                'It was not possible to complete your request. Please, try again.';
+            if (err.message) {
+                errorMessage = err.message;
+            }
+            showErrorSnackbar(errorMessage);
+        }
     }
 
     function handleLogout() {

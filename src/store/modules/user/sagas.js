@@ -24,12 +24,15 @@ export function* updateProfile({ payload }) {
 
         yield put(updateProfileSuccess(response.data));
     } catch (err) {
-        let { error } = err.response.data;
-        if (error.constructor !== String) {
-            error =
-                'It was not possible to complete your request. Please, try again.';
+        let errorMessage =
+            'It was not possible to complete your request. Please, try again.';
+        if (err.response) {
+            const { error } = err.response.data;
+            if (error.constructor === String) {
+                errorMessage = error;
+            }
         }
-        showErrorSnackbar(error);
+        showErrorSnackbar(errorMessage);
         yield put(updateProfileFailure());
     }
 }

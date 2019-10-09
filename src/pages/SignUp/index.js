@@ -1,10 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { Image } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-
-import logo from '~/assets/logo.png';
+import * as Yup from 'yup';
 
 import Background from '~/components/Background';
+import { showErrorSnackbar } from '~/utils/Snackbar';
+import logo from '~/assets/logo.png';
+
 import { signUpRequest } from '~/store/modules/auth/actions';
 
 import {
@@ -15,6 +17,16 @@ import {
     SignLink,
     SignLinkText,
 } from './styles';
+
+const schema = Yup.object().shape({
+    name: Yup.string().required('The name field is required.'),
+    email: Yup.string()
+        .email('Type a valid e-mail.')
+        .required('The e-mail field is required.'),
+    password: Yup.string()
+        .min(6, 'Your password should have at least 6 characters.')
+        .required('The password field is required.'),
+});
 
 export default function SignUp({ navigation }) {
     const dispatch = useDispatch();
@@ -28,8 +40,19 @@ export default function SignUp({ navigation }) {
 
     const loading = useSelector(state => state.auth.loading);
 
-    function handleSubmit() {
-        dispatch(signUpRequest(name, email, password));
+    async function handleSubmit() {
+        try {
+            await schema.validate({ name, email, password });
+
+            dispatch(signUpRequest(name, email, password));
+        } catch (err) {
+            let errorMessage =
+                'It was not possible to complete your request. Please, try again.';
+            if (err.message) {
+                errorMessage = err.message;
+            }
+            showErrorSnackbar(errorMessage);
+        }
     }
 
     return (

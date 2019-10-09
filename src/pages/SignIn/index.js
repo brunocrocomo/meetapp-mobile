@@ -1,10 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { Image } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-
-import logo from '~/assets/logo.png';
+import * as Yup from 'yup';
 
 import Background from '~/components/Background';
+import { showErrorSnackbar } from '~/utils/Snackbar';
+import logo from '~/assets/logo.png';
+
 import { signInRequest } from '~/store/modules/auth/actions';
 
 import {
@@ -16,6 +18,13 @@ import {
     SignLinkText,
 } from './styles';
 
+const schema = Yup.object().shape({
+    email: Yup.string()
+        .email('Type a valid e-mail.')
+        .required('The e-mail field is required.'),
+    password: Yup.string().required('The password field is required.'),
+});
+
 export default function SignIn({ navigation }) {
     const dispatch = useDispatch();
     const passwordRef = useRef();
@@ -25,8 +34,19 @@ export default function SignIn({ navigation }) {
 
     const loading = useSelector(state => state.auth.loading);
 
-    function handleSubmit() {
-        dispatch(signInRequest(email, password));
+    async function handleSubmit() {
+        try {
+            await schema.validate({ email, password });
+
+            dispatch(signInRequest(email, password));
+        } catch (err) {
+            let errorMessage =
+                'It was not possible to complete your request. Please, try again.';
+            if (err.message) {
+                errorMessage = err.message;
+            }
+            showErrorSnackbar(errorMessage);
+        }
     }
 
     return (

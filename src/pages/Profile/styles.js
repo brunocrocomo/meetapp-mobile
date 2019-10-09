@@ -1,5 +1,4 @@
 import styled from 'styled-components/native';
-import { darken } from 'polished';
 
 import Input from '~/components/Input';
 import Button from '~/components/Button';
